@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Ultimate Smart Device Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+  --text: #f5f5f5;
+  --card: rgba(31, 31, 31, 0.8);
+  --accent: #00bcd4;
+  --accent-glow: rgba(0, 188, 212, 0.3);
+  --success: #4caf50;
+  --warning: #ff9800;
+  --error: #f44336;
+  --card-hover: rgba(255, 255, 255, 0.1);
+  --neon-blue: #00ffff;
+  --neon-pink: #ff00ff;
+  --neon-green: #00ff00;
+}
+
+[data-theme="light"] {
+  --bg: linear-gradient(135deg, #f0f2f5 0%, #e3f2fd 50%, #bbdefb 100%);
+  --text: #121212;
+  --card: rgba(255, 255, 255, 0.9);
+  --accent: #00796b;
+  --accent-glow: rgba(0, 121, 107, 0.2);
+  --card-hover: rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR WITH PARTICLE TRAIL */
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, var(--neon-blue), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  animation: cursorPulse 2s ease-in-out infinite;
+}
+
+.cursor-trail {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.7;
+}
+
+@keyframes cursorPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+}
+
+/* AURORA BACKGROUND */
+.aurora {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -3;
+  background: 
+    radial-gradient(ellipse at top, rgba(0, 255, 255, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse at bottom, rgba(255, 0, 255, 0.1) 0%, transparent 70%);
+  animation: auroraMove 20s ease-in-out infinite;
+}
+
+@keyframes auroraMove {
+  0%, 100% { 
+    background-position: 0% 0%, 100% 100%;
+    filter: hue-rotate(0deg);
+  }
+  50% { 
+    background-position: 100% 0%, 0% 100%;
+    filter: hue-rotate(180deg);
+  }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(76, 175, 80, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  animation: backgroundPulse 8s ease-in-out infinite;
+}
+
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+.particle:nth-child(odd) {
+  background: var(--success);
+  animation-duration: 8s;
+}
+
+.particle:nth-child(3n) {
+  background: var(--warning);
+  animation-duration: 10s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+@keyframes backgroundPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  position: relative;
+}
+
+h1 {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px var(--accent-glow);
+  animation: titleGlow 3s ease-in-out infinite alternate;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+h1:hover {
+  animation: glitchText 0.5s ease-in-out, holographicShimmer 2s ease-in-out infinite;
+  text-shadow: 
+    0 0 5px var(--neon-blue),
+    0 0 10px var(--neon-blue),
+    0 0 15px var(--neon-blue),
+    0 0 20px var(--neon-blue);
+}
+
+@keyframes glitchText {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes holographicShimmer {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: underlineExpand 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 20px var(--accent-glow); }
+  100% { text-shadow: 0 0 30px var(--accent-glow), 0 0 40px var(--accent-glow); }
+}
+
+@keyframes underlineExpand {
+  0%, 100% { width: 50px; opacity: 0.5; }
+  50% { width: 150px; opacity: 1; }
+}
+
+.card {
+  background: var(--card);
+  backdrop-filter: blur(15px);
+  border: 2px solid transparent;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(50px) scale(0.9);
+  animation: cardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards, breathe 4s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+/* HOLOGRAPHIC EFFECT */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+  left: 100%;
+}
+
+.card:hover::after {
+  opacity: 1;
+  animation: holographicScan 2s ease-in-out infinite;
+}
+
+@keyframes holographicScan {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(100%) skewX(-15deg); }
+}
+
+/* NEON GLOW BORDERS */
+.card:hover {
+  transform: translateY(-8px) scale(1.02) rotateX(5deg);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px var(--neon-blue),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  background: var(--card-hover);
+  border: 2px solid var(--neon-blue);
+  border-radius: 25px;
+  animation: neonPulse 2s ease-in-out infinite, breathe 4s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% { 
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 20px var(--neon-blue),
+      inset 0 0 20px rgba(0, 255, 255, 0.1);
+  }
+  50% { 
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 40px var(--neon-blue),
+      0 0 60px var(--neon-blue),
+      inset 0 0 30px rgba(0, 255, 255, 0.2);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+}
+
+.card:active {
+  transform: translateY(-4px) scale(0.98) rotateX(-2deg);
+  transition: all 0.1s ease;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  backface-visibility: hidden;
+  transition: transform 0.6s ease;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.5rem 2rem;
+}
+
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.3s; }
+.card:nth-child(5) { animation-delay: 0.4s; }
+.card:nth-child(6) { animation-delay: 0.5s; }
+.card:nth-child(7) { animation-delay: 0.6s; }
+.card:nth-child(8) { animation-delay: 0.7s; }
+
+@keyframes cardSlideIn {
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+/* MORPHING ICONS */
+.card-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  display: inline-block;
+  animation: iconBounce 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.card:hover .card-icon {
+  animation: iconMorph 0.5s ease-in-out, iconBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px var(--neon-blue));
+}
+
+@keyframes iconMorph {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.card-content {
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-left: 10px;
+  animation: statusPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.status-online { 
+  background-color: var(--success);
+  box-shadow: 0 0 15px var(--success);
+}
+.status-warning { 
+  background-color: var(--warning);
+  box-shadow: 0 0 15px var(--warning);
+}
+.status-offline { 
+  background-color: var(--error);
+  box-shadow: 0 0 15px var(--error);
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+
+button {
+  background: linear-gradient(135deg, var(--accent), #0097a7);
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  align-self: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 188, 212, 0.5);
+  background: linear-gradient(135deg, #0097a7, var(--accent));
+}
+
+button:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* FLOATING ACTION BUTTONS */
+.fab-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #0097a7);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 188, 212, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(180deg);
+  box-shadow: 0 6px 25px rgba(0, 188, 212, 0.6);
+}
+
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* CIRCULAR PROGRESS RINGS */
+.progress-ring {
+  width: 80px;
+  height: 80px;
+  margin: 10px 0;
+}
+
+.progress-ring-circle {
+  stroke: var(--accent);
+  stroke-width: 4;
+  fill: transparent;
+  stroke-dasharray: 251.2;
+  stroke-dashoffset: 251.2;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.5s ease;
+  filter: drop-shadow(0 0 5px var(--accent));
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  animation: progressGlow 2s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+  0%, 100% { box-shadow: 0 0 5px var(--accent-glow); }
+  50% { box-shadow: 0 0 15px var(--accent-glow); }
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  animation: valueUpdate 0.5s ease;
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+@keyframes valueUpdate {
+  0% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* LIVE CHARTS */
+.chart-container {
+  width: 100%;
+  height: 100px;
+  margin: 15px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-line {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to top, var(--accent), transparent);
+  animation: chartPulse 2s ease-in-out infinite;
+  transition: height 0.3s ease;
+}
+
+@keyframes chartPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* AUDIO VISUALIZER */
+.audio-visualizer {
+  display: flex;
+  align-items: end;
+  height: 60px;
+  gap: 2px;
+  margin: 10px 0;
+}
+
+.audio-bar {
+  width: 4px;
+  background: linear-gradient(to top, var(--accent), var(--neon-blue));
+  border-radius: 2px;
+  animation: audioVisualize 0.5s ease-in-out infinite alternate;
+}
+
+.audio-bar:nth-child(odd) { animation-delay: 0.1s; }
+.audio-bar:nth-child(even) { animation-delay: 0.2s; }
+
+@keyframes audioVisualize {
+  0% { height: 10px; }
+  100% { height: 40px; }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: rippleEffect 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.card-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* VOICE COMMAND INDICATOR */
+.voice-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--neon-blue), transparent);
+  display: none;
+  animation: voicePulse 1s ease-in-out infinite;
+  z-index: 10000;
+}
+
+.voice-indicator.active {
+  display: block;
+}
+
+@keyframes voicePulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+}
+
+/* PERFORMANCE SCORE */
+.performance-score {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--success) 0deg, var(--warning) 180deg, var(--error) 360deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  position: relative;
+  animation: scoreRotate 10s linear infinite;
+}
+
+.score-circle::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.score-value {
+  position: relative;
+  z-index: 1;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+@keyframes scoreRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .card {
+    font-size: 0.95rem;
+    padding: 1rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .fab-container {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .fab {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: translateX(400px);
+  transition: transform 0.4s ease;
+  z-index: 1001;
+  backdrop-filter: blur(10px);
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -2;
+  opacity: 0.1;
+}
+
+.matrix-column {
+  position: absolute;
+  top: -100%;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  animation: matrixFall linear infinite;
+}
+
+@keyframes matrixFall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+.data-stream {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  animation: dataFlow 2s linear infinite;
+}
+
+@keyframes dataFlow {
+  0% { height: 0; top: 0; }
+  50% { height: 100px; top: 50%; }
+  100% { height: 0; top: 100%; }
+}
+
+/* GESTURE CONTROLS INDICATOR */
+.gesture-hint {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--accent);
+}
+
+.gesture-hint.show {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<div class="custom-cursor" id="cursor"></div>
+<div class="aurora"></div>
+<div class="particles" id="particles"></div>
+<div class="matrix-rain" id="matrix-rain"></div>
+<div class="voice-indicator" id="voice-indicator"></div>
+<div class="gesture-hint" id="gesture-hint">Swipe left/right to navigate • Say "Hey Dashboard" for voice commands</div>
+
+<div class="container" id="container">
+  <h1>🚀 Ultimate Smart Device Dashboard</h1>
+  <button id="toggle-theme">🌗 Toggle Theme</button>
+  
+  <div class="card draggable" id="battery" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">🔋</span>
+        Battery Status
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="battery-level">Loading...</div>
+        <svg class="progress-ring">
+          <circle class="progress-ring-circle" cx="40" cy="40" r="36" id="battery-ring"></circle>
+        </svg>
+        <div class="progress-bar">
+          <div class="progress-fill" id="battery-progress" style="width: 0%"></div>
+        </div>
+        <div id="battery-details">Checking battery status...</div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Battery Analytics</h3>
+      <div class="chart-container" id="battery-chart"></div>
+      <p>Usage pattern: Moderate</p>
+      <p>Health: Excellent (98%)</p>
+      <p>Cycles: 247</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="location" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">📍</span>
+        Location Info
+        <span class="status-indicator status-warning"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="location-coords">Getting location...</div>
+        <div id="location-details">Please allow location access</div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Location History</h3>
+      <p>Most visited: Home (45%)</p>
+      <p>Average speed: 25 km/h</p>
+      <p>Distance today: 12.5 km</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="weather" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">🌤️</span>
+        Weather Info
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="weather-temp">--°C</div>
+        <div id="weather-details">Loading weather data...</div>
+        <div class="chart-container" id="weather-chart"></div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Weather Forecast</h3>
+      <p>Tomorrow: 24°C, Sunny</p>
+      <p>This week: Mostly clear</p>
+      <p>UV Index: 6 (High)</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="time" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">⏰</span>
+        Current Time
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="current-time">--:--:--</div>
+        <div id="time-details">Loading...</div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Time Analytics</h3>
+      <p>Screen time today: 4h 23m</p>
+      <p>Most active: 2-4 PM</p>
+      <p>Sleep schedule: Good</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="network" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">📶</span>
+        Network Status
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="network-status">Online</div>
+        <div id="network-details">Connection: Stable</div>
+        <div class="chart-container" id="network-chart"></div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Network Analytics</h3>
+      <p>Download: 45.2 Mbps</p>
+      <p>Upload: 12.8 Mbps</p>
+      <p>Latency: 23ms</p>
+      <p>Data used today: 1.2 GB</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="device" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">📱</span>
+        Device Info
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="metric-value" id="device-name">Loading...</div>
+        <div id="device-details">Gathering device information...</div>
+        <div class="performance-score">
+          <div class="score-circle">
+            <div class="score-value" id="performance-score">95</div>
+          </div>
+          <div>Performance Score</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>System Health</h3>
+      <p>CPU Usage: 23%</p>
+      <p>Memory: 4.2/8 GB</p>
+      <p>Storage: 156/256 GB</p>
+      <p>Temperature: 42°C</p>
+    </div>
+  </div>
+
+  <div class="card draggable" id="audio" draggable="true">
+    <div class="card-front">
+      <div class="card-title">
+        <span class="card-icon">🎵</span>
+        Audio Visualizer
+        <span class="status-indicator status-online"></span>
+      </div>
+      <div class="card-content">
+        <div class="audio-visualizer" id="audio-visualizer"></div>
+        <div class="metric-value">System Audio</div>
+        <div>Ambient sound level: 45 dB</div>
+      </div>
+    </div>
+    <div class="card-back">
+      <h3>Audio Settings</h3>
+      <p>Volume: 75%</p>
+      <p>Output: Speakers</p>
+      <p>Quality: High (320kbps)</p>
+    </div>
+  </div>
+</div>
+
+<div class="fab-container">
+  <button class="fab" id="voice-command" title="Voice Commands">🎤</button>
+  <button class="fab" id="refresh-data" title="Refresh Data">🔄</button>
+  <button class="fab" id="settings" title="Settings">⚙️</button>
+</div>
+
+<script>
+// GLOBAL VARIABLES
+let isListening = false;
+let recognition;
+let cursorTrails = [];
+let draggedElement = null;
+let touchStartX = 0;
+let touchStartY = 0;
+
+// CUSTOM CURSOR AND PARTICLE TRAIL
+const cursor = document.getElementById('cursor');
+let mouseX = 0, mouseY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  
+  cursor.style.left = mouseX - 10 + 'px';
+  cursor.style.top = mouseY - 10 + 'px';
+  
+  // Create cursor trail
+  createCursorTrail(mouseX, mouseY);
+});
+
+function createCursorTrail(x, y) {
+  const trail = document.createElement('div');
+  trail.className = 'cursor-trail';
+  trail.style.left = x - 3 + 'px';
+  trail.style.top = y - 3 + 'px';
+  document.body.appendChild(trail);
+  
+  setTimeout(() => {
+    trail.style.opacity = '0';
+    trail.style.transform = 'scale(0)';
+    setTimeout(() => trail.remove(), 300);
+  }, 100);
+}
+
+// THEME TOGGLE WITH ENHANCED ANIMATION
+const themeButton = document.getElementById("toggle-theme");
+themeButton.onclick = () => {
+  const currentTheme = document.body.getAttribute("data-theme");
+  const newTheme = currentTheme === "light" ? "dark" : "light";
+  
+  document.body.style.transition = "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+  document.body.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+  
+  themeButton.style.transform = "scale(0.8)";
+  setTimeout(() => {
+    themeButton.textContent = newTheme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode";
+    themeButton.style.transform = "scale(1)";
+  }, 200);
+  
+  showNotification(`Switched to ${newTheme} theme!`);
+  
+  // Haptic feedback
+  if (navigator.vibrate) {
+    navigator.vibrate(50);
+  }
+};
+
+// Initialize theme
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.setAttribute("data-theme", savedTheme);
+  themeButton.textContent = savedTheme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode";
+  
+  // Show gesture hint
+  setTimeout(() => {
+    document.getElementById('gesture-hint').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('gesture-hint').classList.remove('show');
+    }, 5000);
+  }, 2000);
+});
+
+// NOTIFICATION SYSTEM WITH SOUND
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  // Play notification sound
+  playSound('notification');
+  
+  setTimeout(() => notification.classList.add('show'), 100);
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => document.body.removeChild(notification), 400);
+  }, 3000);
+}
+
+// SOUND EFFECTS
+function playSound(type) {
+  // Create audio context for sound effects
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  switch(type) {
+    case 'notification':
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+      break;
+    case 'click':
+      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+      break;
+    case 'hover':
+      oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+      break;
+  }
+  
+  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.2);
+}
+
+// VOICE COMMANDS
+function initVoiceCommands() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+    
+    recognition.onstart = () => {
+      isListening = true;
+      document.getElementById('voice-indicator').classList.add('active');
+      showNotification('Listening for commands...');
+    };
+    
+    recognition.onend = () => {
+      isListening = false;
+      document.getElementById('voice-indicator').classList.remove('active');
+    };
+    
+    recognition.onresult = (event) => {
+      const command = event.results[0][0].transcript.toLowerCase();
+      processVoiceCommand(command);
+    };
+    
+    recognition.onerror = (event) => {
+      showNotification('Voice recognition error: ' + event.error);
+    };
+  }
+}
+
+function processVoiceCommand(command) {
+  showNotification(`Command: "${command}"`);
+  
+  if (command.includes('refresh') || command.includes('update')) {
+    updateAllData();
+    showNotification('Data refreshed by voice command!');
+  } else if (command.includes('dark mode') || command.includes('dark theme')) {
+    if (document.body.getAttribute('data-theme') !== 'dark') {
+      themeButton.click();
+    }
+  } else if (command.includes('light mode') || command.includes('light theme')) {
+    if (document.body.getAttribute('data-theme') !== 'light') {
+      themeButton.click();
+    }
+  } else if (command.includes('flip') || command.includes('turn')) {
+    document.querySelectorAll('.card').forEach(card => {
+      card.classList.toggle('flipped');
+    });
+    showNotification('Cards flipped!');
+  } else {
+    showNotification('Command not recognized. Try: refresh, dark mode, light mode, or flip cards');
+  }
+}
+
+// GESTURE CONTROLS
+let startX = 0;
+let startY = 0;
+
+document.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (e) => {
+  const endX = e.changedTouches[0].clientX;
+  const endY = e.changedTouches[0].clientY;
+  const diffX = startX - endX;
+  const diffY = startY - endY;
+  
+  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+    if (diffX > 0) {
+      // Swipe left
+      showNotification('Swiped left - Next view');
+      // Add your navigation logic here
+    } else {
+      // Swipe right
+      showNotification('Swiped right - Previous view');
+      // Add your navigation logic here
+    }
+  }
+});
+
+// DRAG AND DROP
+document.querySelectorAll('.draggable').forEach(card => {
+  card.addEventListener('dragstart', (e) => {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.5';
+    playSound('click');
+  });
+  
+  card.addEventListener('dragend', (e) => {
+    e.target.style.opacity = '1';
+    draggedElement = null;
+  });
+  
+  card.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+  
+  card.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (draggedElement && draggedElement !== e.target) {
+      const container = document.getElementById('container');
+      const draggedIndex = Array.from(container.children).indexOf(draggedElement);
+      const targetIndex = Array.from(container.children).indexOf(e.target);
+      
+      if (draggedIndex < targetIndex) {
+        container.insertBefore(draggedElement, e.target.nextSibling);
+      } else {
+        container.insertBefore(draggedElement, e.target);
+      }
+      
+      showNotification('Cards reordered!');
+      playSound('notification');
+    }
+  });
+});
+
+// BATTERY API WITH ENHANCED FEATURES
+async function updateBatteryInfo() {
+  try {
+    if ('getBattery' in navigator) {
+      const battery = await navigator.getBattery();
+      const level = Math.round(battery.level * 100);
+      
+      document.getElementById('battery-level').textContent = `${level}%`;
+      document.getElementById('battery-progress').style.width = `${level}%`;
+      
+      // Update circular progress ring
+      const ring = document.getElementById('battery-ring');
+      const circumference = 2 * Math.PI * 36;
+      const offset = circumference - (level / 100) * circumference;
+      ring.style.strokeDashoffset = offset;
+      
+      document.getElementById('battery-details').textContent = 
+        `${battery.charging ? 'Charging' : 'Not charging'} • ${Math.round(battery.chargingTime / 3600)}h remaining`;
+      
+      const indicator = document.querySelector('#battery .status-indicator');
+      indicator.className = `status-indicator ${level > 20 ? 'status-online' : 'status-warning'}`;
+      
+      // Update battery chart
+      updateChart('battery-chart', [level, level-5, level-10, level-8, level-12]);
+    } else {
+      document.getElementById('battery-level').textContent = 'N/A';
+      document.getElementById('battery-details').textContent = 'Battery API not supported';
+    }
+  } catch (error) {
+    document.getElementById('battery-level').textContent = 'Error';
+    document.getElementById('battery-details').textContent = 'Unable to access battery info';
+  }
+}
+
+// GEOLOCATION WITH ENHANCED FEATURES
+function updateLocationInfo() {
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        document.getElementById('location-coords').textContent = 
+          `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        document.getElementById('location-details').textContent = 
+          `Accuracy: ${Math.round(position.coords.accuracy)}m • Speed: ${position.coords.speed || 0} m/s`;
+        
+        document.querySelector('#location .status-indicator').className = 'status-indicator status-online';
+      },
+      (error) => {
+        document.getElementById('location-coords').textContent = 'Access Denied';
+        document.getElementById('location-details').textContent = 'Location permission required';
+        document.querySelector('#location .status-indicator').className = 'status-indicator status-error';
+      }
+    );
+  } else {
+    document.getElementById('location-coords').textContent = 'Not Supported';
+    document.getElementById('location-details').textContent = 'Geolocation API not available';
+  }
+}
+
+// ENHANCED WEATHER WITH CHARTS
+function updateWeatherInfo() {
+  const temperatures = [18, 22, 25, 28, 24, 20, 16];
+  const conditions = ['Sunny', 'Cloudy', 'Partly Cloudy', 'Rainy', 'Clear'];
+  
+  const temp = temperatures[Math.floor(Math.random() * temperatures.length)];
+  const condition = conditions[Math.floor(Math.random() * conditions.length)];
+  
+  document.getElementById('weather-temp').textContent = `${temp}°C`;
+  document.getElementById('weather-details').textContent = 
+    `${condition} • Humidity: ${Math.floor(Math.random() * 40 + 40)}% • Wind: ${Math.floor(Math.random() * 20 + 5)} km/h`;
+  
+  // Update weather chart
+  const weekTemps = Array.from({length: 7}, () => Math.floor(Math.random() * 15 + 15));
+  updateChart('weather-chart', weekTemps);
+}
+
+// TIME UPDATE WITH ENHANCED FEATURES
+function updateTime() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString();
+  const dateString = now.toLocaleDateString();
+  
+  document.getElementById('current-time').textContent = timeString;
+  document.getElementById('time-details').textContent = 
+    `${dateString} • Week ${Math.ceil((now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000))}`;
+}
+
+// NETWORK STATUS WITH SPEED TEST
+function updateNetworkStatus() {
+  const isOnline = navigator.onLine;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  
+  document.getElementById('network-status').textContent = isOnline ? 'Online' : 'Offline';
+  
+  let details = isOnline ? 'Connection: Stable' : 'No internet connection';
+  if (connection) {
+    details += ` • ${connection.effectiveType || 'Unknown'} • ${connection.downlink || 'Unknown'} Mbps`;
+  }
+  
+  document.getElementById('network-details').textContent = details;
+  
+  const indicator = document.querySelector('#network .status-indicator');
+  indicator.className = `status-indicator ${isOnline ? 'status-online' : 'status-offline'}`;
+  
+  // Update network chart
+  const speeds = Array.from({length: 10}, () => Math.floor(Math.random() * 50 + 10));
+  updateChart('network-chart', speeds);
+}
+
+// ENHANCED DEVICE INFO
+function updateDeviceInfo() {
+  const userAgent = navigator.userAgent;
+  let deviceType = 'Unknown Device';
+  
+  if (/Mobile|Android|iPhone|iPad/.test(userAgent)) {
+    deviceType = 'Mobile Device';
+  } else if (/Tablet/.test(userAgent)) {
+    deviceType = 'Tablet';
+  } else {
+    deviceType = 'Desktop';
+  }
+  
+  document.getElementById('device-name').textContent = deviceType;
+  document.getElementById('device-details').textContent = 
+    `Screen: ${screen.width}×${screen.height} • ${navigator.platform} • Cores: ${navigator.hardwareConcurrency || 'Unknown'}`;
+  
+  // Update performance score
+  const score = Math.floor(Math.random() * 20 + 80);
+  document.getElementById('performance-score').textContent = score;
+}
+
+// LIVE CHARTS
+function updateChart(containerId, data) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  container.innerHTML = '';
+  const maxValue = Math.max(...data);
+  
+  data.forEach((value, index) => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-line';
+    bar.style.left = `${(index / data.length) * 100}%`;
+    bar.style.height = `${(value / maxValue) * 100}%`;
+    bar.style.animationDelay = `${index * 0.1}s`;
+    container.appendChild(bar);
+  });
+}
+
+// AUDIO VISUALIZER
+function createAudioVisualizer() {
+  const visualizer = document.getElementById('audio-visualizer');
+  visualizer.innerHTML = '';
+  
+  for (let i = 0; i < 20; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'audio-bar';
+    bar.style.animationDelay = `${i * 0.05}s`;
+    bar.style.animationDuration = `${Math.random() * 0.5 + 0.3}s`;
+    visualizer.appendChild(bar);
+  }
+}
+
+// REFRESH FUNCTIONALITY
+const refreshBtn = document.getElementById('refresh-data');
+refreshBtn.onclick = () => {
+  refreshBtn.classList.add('loading');
+  showNotification('Refreshing all data...');
+  playSound('click');
+  
+  setTimeout(() => {
+    updateAllData();
+    refreshBtn.classList.remove('loading');
+    showNotification('All data refreshed successfully!');
+    playSound('notification');
+  }, 1500);
+};
+
+// VOICE COMMAND BUTTON
+document.getElementById('voice-command').onclick = () => {
+  if (recognition) {
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  } else {
+    showNotification('Voice recognition not supported in this browser');
+  }
+};
+
+// SETTINGS BUTTON
+document.getElementById('settings').onclick = () => {
+  showNotification('Settings panel would open here');
+  playSound('click');
+};
+
+// UPDATE ALL DATA
+function updateAllData() {
+  updateBatteryInfo();
+  updateLocationInfo();
+  updateWeatherInfo();
+  updateTime();
+  updateNetworkStatus();
+  updateDeviceInfo();
+}
+
+// PARTICLE SYSTEM
+function createParticles() {
+  const particlesContainer = document.getElementById('particles');
+  const particleCount = 30;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 6 + 's';
+    particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+// RIPPLE EFFECT
+function createRipple(event, element) {
+  const rect = element.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = event.clientX - rect.left - size / 2;
+  const y = event.clientY - rect.top - size / 2;
+  
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  
+  element.appendChild(ripple);
+  
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
+}
+
+// MATRIX RAIN EFFECT
+function createMatrixRain() {
+  const matrixContainer = document.getElementById('matrix-rain');
+  const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+  
+  for (let i = 0; i < 20; i++) {
+    const column = document.createElement('div');
+    column.className = 'matrix-column';
+    column.style.left = Math.random() * 100 + '%';
+    column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    column.style.animationDelay = Math.random() * 2 + 's';
+    
+    let text = '';
+    for (let j = 0; j < 25; j++) {
+      text += characters.charAt(Math.floor(Math.random() * characters.length)) + '<br>';
+    }
+    column.innerHTML = text;
+    
+    matrixContainer.appendChild(column);
+  }
+}
+
+// DATA STREAMS
+function createDataStreams() {
+  setInterval(() => {
+    const stream = document.createElement('div');
+    stream.className = 'data-stream';
+    stream.style.left = Math.random() * 100 + '%';
+    stream.style.animationDelay = Math.random() * 1 + 's';
+    document.body.appendChild(stream);
+    
+    setTimeout(() => {
+      stream.remove();
+    }, 2000);
+  }, 4000);
+}
+
+// INITIALIZE EVERYTHING
+createParticles();
+createMatrixRain();
+createDataStreams();
+createAudioVisualizer();
+initVoiceCommands();
+updateAllData();
+
+// INTERVALS
+setInterval(updateTime, 1000);
+setInterval(updateNetworkStatus, 5000);
+setInterval(() => {
+  // Update audio visualizer
+  document.querySelectorAll('.audio-bar').forEach(bar => {
+    bar.style.height = Math.random() * 50 + 10 + 'px';
+  });
+}, 200);
+
+// NETWORK EVENT LISTENERS
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+
+// ENHANCED CARD INTERACTIONS
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', function(e) {
+    createRipple(e, this);
+    playSound('click');
+    
+    this.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      this.style.transform = '';
+    }, 150);
+    
+    if (Math.random() < 0.3) {
+      this.classList.add('card-shake');
+      setTimeout(() => {
+        this.classList.remove('card-shake');
+      }, 500);
+    }
+    
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
+  });
+  
+  card.addEventListener('dblclick', function() {
+    this.classList.toggle('flipped');
+    playSound('notification');
+    showNotification('Card flipped!');
+  });
+  
+  card.addEventListener('mouseenter', function() {
+    playSound('hover');
+  });
+  
+  card.addEventListener('mousemove', function(e) {
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = (y - centerY) / 15;
+    const rotateY = (centerX - x) / 15;
+    
+    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+  });
+  
+  card.addEventListener('mouseleave', function() {
+    this.style.transform = '';
+  });
+});
+
+// WAKE LOCK API (keep screen on)
+let wakeLock = null;
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      showNotification('Screen will stay awake');
+    }
+  } catch (err) {
+    console.log('Wake lock failed:', err);
+  }
+}
+
+// Request wake lock on load
+requestWakeLock();
+
+// PERFORMANCE MONITORING
+function monitorPerformance() {
+  if ('performance' in window) {
+    const navigation = performance.getEntriesByType('navigation')[0];
+    const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
+    
+    if (loadTime > 0) {
+      console.log(`Page load time: ${loadTime}ms`);
+    }
+  }
+}
+
+monitorPerformance();
+
+// AI STATUS MESSAGES
+const aiMessages = [
+  "All systems optimal 🚀",
+  "Running smooth as silk ✨",
+  "Performance is stellar 🌟",
+  "Everything looks great! 👍",
+  "Systems are purring 🐱",
+  "All green lights ahead 🟢",
+  "Optimal performance detected 📈",
+  "Running like a dream 💭"
+];
+
+function updateAIStatus() {
+  const message = aiMessages[Math.floor(Math.random() * aiMessages.length)];
+  // You can display this in a status area
+  console.log('AI Status:', message);
+}
+
+setInterval(updateAIStatus, 30000); // Update every 30 seconds
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a8cadb2243550a',t:'MTc1NDQyMzEwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
